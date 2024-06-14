@@ -22,7 +22,7 @@ jobs:
       - name: Display Just version
         run: just --version
       - name: Run format
-        run: just fomat
+        run: just format
       - name: Check idempotency
         run: git diff --exit-code --quiet
 
