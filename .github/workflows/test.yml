@@ -1,0 +1,69 @@
+name: Test
+
+on: [push]
+
+jobs:
+  check-idempotency:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.22.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Just
+        uses: extractions/setup-just@v1
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Display Go version
+        run: go version
+      - name: Display Just version
+        run: just --version
+      - name: Run format
+        run: just fomat
+      - name: Check idempotency
+        run: git diff --exit-code --quiet
+
+  check-quality:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.22.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Just
+        uses: extractions/setup-just@v1
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Display Go version
+        run: go version
+      - name: Display Just version
+        run: just --version
+      - name: Run check
+        run: just check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [ '1.22.x' ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Just
+        uses: extractions/setup-just@v1
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Display Go version
+        run: go version
+      - name: Display Just version
+        run: just --version
+      - name: Run tests
+        run: just test

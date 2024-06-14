@@ -1,4 +1,10 @@
-tools: (install "golang.org/x/tools/cmd/goimports") (install "honnef.co/go/tools/cmd/staticcheck")
+tools: (install "golang.org/x/tools/cmd/goimports") (install "honnef.co/go/tools/cmd/staticcheck") (install "gotest.tools/gotestsum")
+
+# ---- TESTS ----
+test: (install "gotest.tools/gotestsum")
+	@echo "Running tests"
+	@gotestsum --format pkgname `go list -e ./... | grep -v github.com/eifoen/syringe/tools`
+
 
 # ---- HOUSEKEEPING ----
 imports: (install "golang.org/x/tools/cmd/goimports")
@@ -15,16 +21,12 @@ format: imports tidy
 	@gofmt -s -w "{{justfile_directory()}}"
 
 # ---- CHECKS ----
-check: format staticcheck vet
+check: staticcheck vet
 
 staticcheck: (install "honnef.co/go/tools/cmd/staticcheck") 
 	@echo "Running staticcheck..."
-	@staticcheck "{{justfile_directory()}}"
+	@staticcheck `go list -e ./... | grep -v github.com/eifoen/syringe/tools`
 	
-deadcode: (install "golang.org/x/tools/cmd/deadcode")
-	@echo "Running deadcode..."
-	@deadcode "{{justfile_directory()}}"
-
 vet: 
 	@echo "Running go vet..."
 	@go vet "{{justfile_directory()}}"
